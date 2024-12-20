@@ -1,3 +1,7 @@
 println "Hello World."
 // System.getenv のように引数のない関数のカッコは省略できない
 println System.getenv()
+
+// ダブルクォーテーションの文字列内には、シェルっぽく${}で変数を入れられる
+def greet = 'Hello'
+println "${greet} World!"
