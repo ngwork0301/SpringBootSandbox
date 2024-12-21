@@ -10,6 +10,19 @@ println "${greet} World!"
 // Groovy内にはクラスのフィードとメソッドはすべてpublic
 class TestClass {
     def hoge = 'abc'
+
+    // フィードアクセスでこれが呼ばれる
+    def getHoge() {
+        println 'getHoge() called'
+        return this.hoge
+    }
+
+    // フィードアクセスでこれが呼ばれる
+    def setHoge(newHoge) {
+        println "setHoge(${newHoge}) called"
+        this.hoge = newHoge
+    }
+    
     def sayHoge() {
         println hoge
     }
