@@ -50,4 +50,13 @@ test.sayHoge()
  closure(100) // 101
  closure(100) // 201
  closure(100) // 301
- 
+
+// 無名関数としてのクロージャ
+def c1 = { a, b -> println a + b }
+c1(1, 2)   // 3
+
+// ラムダとしてのクロージャ
+def c2 = { a -> println a}
+[10, 20, 30].each(c2)   // [] はJavaのList型と同じ。10, 20, 30
+// リストや配列、コレクションなどのつかいかたは
+// https://koji-k.github.io/groovy-tutorial/collection/list.html
