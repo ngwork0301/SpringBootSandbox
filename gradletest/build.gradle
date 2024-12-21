@@ -34,3 +34,20 @@ println test.hoge
 test.hoge = 'cdf'
 
 test.sayHoge()
+
+
+ // クロージャの実装
+ // クロージャは本来は「環境つき関数」だが、
+ // Groovyでは「無名関数」「ラムダ」の意味合いも持つ
+
+ // 本来のクロージャ
+ def c0 = {
+    def local = 1
+    return { x -> local += x; println local }
+ }
+
+ def closure = c0()
+ closure(100) // 101
+ closure(100) // 201
+ closure(100) // 301
+ 
