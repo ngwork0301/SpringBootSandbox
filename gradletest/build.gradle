@@ -60,3 +60,11 @@ def c2 = { a -> println a}
 [10, 20, 30].each(c2)   // [] はJavaのList型と同じ。10, 20, 30
 // リストや配列、コレクションなどのつかいかたは
 // https://koji-k.github.io/groovy-tutorial/collection/list.html
+
+// 引数が1つだけの場合、記述を省略できる（引数がitとして予約される）
+def c3 = { println it }
+c3(1000)  // 1000
+def c4 = { it() }
+c4 {
+    println 'abc'
+}
