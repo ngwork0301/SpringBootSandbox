@@ -75,7 +75,29 @@ def c5 = { a, closure5 ->
 }
 // 普通なら以下のように第2引数にクロージャを渡すが
 c5('def', { println it })
-// 以下のように外側にクロージャの実装をかける
+// 以下のように外側にクロージャの実装を書ける
 c5('ghi') {
     println it
 }
+
+// クロージャのデリゲート
+def c6 = {
+    hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
+    fuga('abc')
+}
+
+class HogeFuga {
+    def hoge(int num) {
+        println num
+    }
+
+    def fuga(String str) {
+        println str
+    }
+}
+
+def hogefuga = new HogeFuga()
+
+// クロージャの delegate に HogeFugaクラスのインスタンスを設定
+c6.delegate = hogefuga
+c6()
