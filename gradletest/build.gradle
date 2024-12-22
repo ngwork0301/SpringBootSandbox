@@ -1,0 +1,103 @@
+println "Hello World."
+// System.getenv のように引数のない関数のカッコは省略できない
+println System.getenv()
+
+// ダブルクォーテーションの文字列内には、シェルっぽく${}で変数を入れられる
+def greet = 'Hello'
+println "${greet} World!"
+
+// クラスの実装
+// Groovy内にはクラスのフィードとメソッドはすべてpublic
+class TestClass {
+    def hoge = 'abc'
+
+    // フィードアクセスでこれが呼ばれる
+    def getHoge() {
+        println 'getHoge() called'
+        return this.hoge
+    }
+
+    // フィードアクセスでこれが呼ばれる
+    def setHoge(newHoge) {
+        println "setHoge(${newHoge}) called"
+        this.hoge = newHoge
+    }
+    
+    def sayHoge() {
+        println hoge
+    }
+}
+
+def test = new TestClass()
+
+println test.hoge
+test.hoge = 'cdf'
+
+test.sayHoge()
+
+
+ // クロージャの実装
+ // クロージャは本来は「環境つき関数」だが、
+ // Groovyでは「無名関数」「ラムダ」の意味合いも持つ
+
+ // 本来のクロージャ
+ def c0 = {
+    def local = 1
+    return { x -> local += x; println local }
+ }
+
+ def closure = c0()
+ closure(100) // 101
+ closure(100) // 201
+ closure(100) // 301
+
+// 無名関数としてのクロージャ
+def c1 = { a, b -> println a + b }
+c1(1, 2)   // 3
+
+// ラムダとしてのクロージャ
+def c2 = { a -> println a}
+[10, 20, 30].each(c2)   // [] はJavaのList型と同じ。10, 20, 30
+// リストや配列、コレクションなどのつかいかたは
+// https://koji-k.github.io/groovy-tutorial/collection/list.html
+
+// 引数が1つだけの場合、記述を省略できる（引数がitとして予約される）
+def c3 = { println it }
+c3(1000)  // 1000
+def c4 = { it() }  // 引数でうけとったクロージャをそのまま実行
+c4 {
+    println 'abc'
+}
+
+// 引数の最後がクロージャのとき、クロージャの中身の実装を外側に書ける
+def c5 = { a, closure5 -> 
+    closure5(a) 
+}
+// 普通なら以下のように第2引数にクロージャを渡すが
+c5('def', { println it })
+// 以下のように外側にクロージャの実装を書ける
+c5('ghi') {
+    println it
+}
+
+// クロージャのデリゲート
+def c6 = {
+    hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
+    fuga('abc')
+}
+
+class HogeFuga {
+    def hoge(int num) {
+        println num
+    }
+
+    def fuga(String str) {
+        println str
+    }
+}
+
+def hogefuga = new HogeFuga()
+
+// クロージャの delegate に HogeFugaクラスのインスタンスを設定
+c6.delegate = hogefuga
+c6()
