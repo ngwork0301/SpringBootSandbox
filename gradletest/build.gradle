@@ -138,3 +138,18 @@ file('./tmp').mkdir()
 file('./tmp/abc.txt').createNewFile()
 
 delete './tmp'
+
+// copy
+// 引数にクロージャを渡すことで様々なカスタマイズが可能
+delete './from'
+delete './info'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+file('./info').mkdir()
+
+copy {
+    from './from'
+    into './into'
+}
