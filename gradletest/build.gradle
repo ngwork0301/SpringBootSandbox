@@ -101,3 +101,67 @@ def hogefuga = new HogeFuga()
 // クロージャの delegate に HogeFugaクラスのインスタンスを設定
 c6.delegate = hogefuga
 c6()
+
+// ファイル操作
+
+// file()でFileオブジェクト(Java)が生成できる
+file('./dir1').mkdir()
+file('./dir1/a.txt').createNewFile()
+file('./dir1/b.txt').createNewFile()
+file('./dir1/dir2').mkdir()
+file('./dir1/dir2/c.txt').createNewFile()
+
+// files() で FileCollectionオブジェクト(Gradle固有) が生成できる
+// - Iterable<File> の実装クラス
+// https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileCollection.html
+def list = files('c.json', 'a.txt', 'a.csv', 'a.json', 'b.csv', 'b.json')
+list.filter({ f -> f.getName().endsWith('.json') }).sort().each({ println it.getName() })
+
+// ネストしてもフラットなリストとして扱える
+def list2 = files(files('c.json', 'a.txt', 'a.csv'), files('a.json', 'b.csv', 'b.json'))
+list.filter({ f -> f.getName().endsWith('.csv') }).sort().each({ println it.getName() })
+
+// fileTreeでFileTreeオブジェクト(Gradle固有）が生成できる
+// - FileCollectionのサブクラス
+// https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html
+fileTree('./dir1').visit({ println it.getPath().toString() })
+
+file('./dir1/dir2/c.txt').delete()
+file('./dir1/dir2').delete()
+file('./dir1/b.txt').delete()
+file('./dir1/a.txt').delete()
+file('./dir1').delete()
+
+
+// deleteは、ファイル、ディレクトリは再帰的に削除可能
+file('./tmp').mkdir()
+file('./tmp/abc.txt').createNewFile()
+
+delete './tmp'
+
+// copy
+// 引数にクロージャを渡すことで様々なカスタマイズが可能
+delete './from'
+delete './into'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+file('./into').mkdir()
+
+import java.nio.file.Files
+import java.nio.file.Path
+file('./from/hogefuga.txt').createNewFile()
+Files.writeString(Path.of('./from/hogefuga.txt'), '''
+Hello, ${hoge} !
+Hello, ${fuga} !
+''');
+
+copy {
+    from './from/hogefuga.txt'
+    into './into'
+    expand([
+        hoge: 'aaa',
+        fuga: 'bbb'
+    ])
+}
