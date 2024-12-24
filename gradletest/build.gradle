@@ -150,7 +150,7 @@ file('./from/dir/b.txt').createNewFile()
 file('./into').mkdir()
 
 copy {
-    from './from'
-    exclude '**/b.txt'
+    from './from/a.txt'
     into './into'
+    rename { name -> 'aaa.txt' }
 }
