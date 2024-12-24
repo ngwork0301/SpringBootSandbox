@@ -142,14 +142,15 @@ delete './tmp'
 // copy
 // 引数にクロージャを渡すことで様々なカスタマイズが可能
 delete './from'
-delete './info'
+delete './into'
 file('./from').mkdir()
 file('./from/a.txt').createNewFile()
 file('./from/dir').mkdir()
 file('./from/dir/b.txt').createNewFile()
-file('./info').mkdir()
+file('./into').mkdir()
 
 copy {
     from './from'
+    include '**/a.txt'
     into './into'
 }
