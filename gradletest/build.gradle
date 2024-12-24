@@ -151,6 +151,6 @@ file('./into').mkdir()
 
 copy {
     from './from'
-    include '**/a.txt'
+    exclude '**/b.txt'
     into './into'
 }
