@@ -149,8 +149,19 @@ file('./from/dir').mkdir()
 file('./from/dir/b.txt').createNewFile()
 file('./into').mkdir()
 
+import java.nio.file.Files
+import java.nio.file.Path
+file('./from/hogefuga.txt').createNewFile()
+Files.writeString(Path.of('./from/hogefuga.txt'), '''
+Hello, ${hoge} !
+Hello, ${fuga} !
+''');
+
 copy {
-    from './from/a.txt'
+    from './from/hogefuga.txt'
     into './into'
-    rename { name -> 'aaa.txt' }
+    expand([
+        hoge: 'aaa',
+        fuga: 'bbb'
+    ])
 }
