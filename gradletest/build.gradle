@@ -167,6 +167,9 @@ copy {
     ])
 }
 
+delete './from'
+delete './into'
+
 
 // execでコマンド実行ができる
 exec {
@@ -179,3 +182,34 @@ exec {
     environment = [ 'test1': 'aaa' , 'test2': 'bbb' , 'test3': 'ccc' ]
     commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
 }
+
+// javaexecでjavaコマンドを呼び出し
+import java.nio.file.Path;
+import java.nio.file.Files;
+
+delete('./Main.java')
+delete('./Main.class')
+
+Files.writeString(Path.of('Main.java'), '''
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(args));
+    }
+}
+''');
+
+exec {
+    commandLine 'javac', 'Main.java'
+}
+
+
+javaexec {
+    main = 'Main'
+    classpath = files('.')
+    args = ['a', 'b', 'c']
+}
+
+delete('./Main.java')
+delete('./Main.class')
