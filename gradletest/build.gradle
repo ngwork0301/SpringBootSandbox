@@ -166,3 +166,16 @@ copy {
         fuga: 'bbb'
     ])
 }
+
+
+// execでコマンド実行ができる
+exec {
+    commandLine 'java', '-version'
+}
+
+// 環境変数の指定
+// - mac / linux
+exec {
+    environment = [ 'test1': 'aaa' , 'test2': 'bbb' , 'test3': 'ccc' ]
+    commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
+}
