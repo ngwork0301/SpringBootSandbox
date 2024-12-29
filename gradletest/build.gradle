@@ -213,3 +213,16 @@ javaexec {
 
 delete('./Main.java')
 delete('./Main.class')
+
+
+/////////////////////////
+// Gradle フレームワーク
+/////////////////////////
+
+// Taskの登録
+tasks.register('task1') {
+    doLast {
+        println 'This is task1'
+    }
+}
+
