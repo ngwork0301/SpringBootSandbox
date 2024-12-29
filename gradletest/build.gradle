@@ -80,7 +80,7 @@ c5('ghi') {
     println it
 }
 
-// クロージャのデリゲート
+// クロージャのデリゲート (template Methodパターン)
 def c6 = {
     hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
     fuga('abc')
@@ -157,6 +157,7 @@ Hello, ${hoge} !
 Hello, ${fuga} !
 ''');
 
+// hogefuga.txtをテンプレートにして、${hoge}と${fuga}の中身を置き換えてファイル生成
 copy {
     from './from/hogefuga.txt'
     into './into'
