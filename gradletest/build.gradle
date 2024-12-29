@@ -224,5 +224,11 @@ tasks.register('task1') {
     doLast {
         println 'This is task1'
     }
+    doLast {
+        println 'Hello'
+    }
+    doLast {
+        println 'World'
+    }
 }
 
