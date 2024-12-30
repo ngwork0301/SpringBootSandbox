@@ -80,7 +80,7 @@ c5('ghi') {
     println it
 }
 
-// クロージャのデリゲート
+// クロージャのデリゲート (template Methodパターン)
 def c6 = {
     hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
     fuga('abc')
@@ -157,6 +157,7 @@ Hello, ${hoge} !
 Hello, ${fuga} !
 ''');
 
+// hogefuga.txtをテンプレートにして、${hoge}と${fuga}の中身を置き換えてファイル生成
 copy {
     from './from/hogefuga.txt'
     into './into'
@@ -165,3 +166,182 @@ copy {
         fuga: 'bbb'
     ])
 }
+
+delete './from'
+delete './into'
+
+
+// execでコマンド実行ができる
+exec {
+    commandLine 'java', '-version'
+}
+
+// 環境変数の指定
+// - mac / linux
+exec {
+    environment = [ 'test1': 'aaa' , 'test2': 'bbb' , 'test3': 'ccc' ]
+    commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
+}
+
+// javaexecでjavaコマンドを呼び出し
+import java.nio.file.Path;
+import java.nio.file.Files;
+
+delete('./Main.java')
+delete('./Main.class')
+
+Files.writeString(Path.of('Main.java'), '''
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(args));
+    }
+}
+''');
+
+exec {
+    commandLine 'javac', 'Main.java'
+}
+
+
+javaexec {
+    main = 'Main'
+    classpath = files('.')
+    args = ['a', 'b', 'c']
+}
+
+delete('./Main.java')
+delete('./Main.class')
+
+
+/////////////////////////
+// Gradle フレームワーク
+/////////////////////////
+
+// Taskの登録
+tasks.register('task1') {
+    doLast {
+        println 'This is task1'
+    }
+    doLast {
+        println 'Hello'
+    }
+    doLast {
+        println 'World'
+    }
+}
+
+// doLastの中身は、以下のようなactionsへの追加
+// tasks.register('task1') {
+//     actions.add(new Action<Task>() {
+//         @Override
+//         public void execute(Task task) {
+//             println("aaa")
+//         }
+//     })
+// }
+
+// Taskが使えるメソッド
+// https://docs.gradle.org/current/dsl/org.gradle.api.Task.html#N18C09
+
+task1 {
+    doLast {
+        println 'additional processing'
+    }
+}
+
+// doLast内の処理は、実行フェーズ
+// その外に書いた処理は、設定フェーズ
+tasks.register('task2') {
+    println 'config a'
+    doLast {
+        println 'exec a'
+    }
+}
+
+tasks.register('task3') {
+    // dependsOnで依存するタスクを登録すると、task3を呼び出すと、task2が先に実行される
+    dependsOn 'task2'
+    doLast {
+        println 'exec b'
+    }
+}
+
+// Taskの依存関係の重複は削除される
+tasks.register('task4') {
+    dependsOn 'task2'
+    dependsOn 'task3'
+    doLast {
+        println 'exec c'
+    }
+}
+
+// 組み込みタスク
+// Copyタスク
+delete './from'
+delete './into'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+
+tasks.register('copytask', Copy) {
+    from './from'
+    into './into'
+}
+
+delete './from'
+delete './into'
+
+
+// Execタスク
+tasks.register('exectask', Exec) {
+    environment = [ 'test1': 'aaa', 'test2': 'bbb', 'test3': 'ccc' ]
+    commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
+}
+
+
+// JavaExecタスク
+// 同様なので割愛
+
+// Zipタスク
+delete './from'
+delete './into'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+
+
+tasks.register('ziptask', Zip) {
+    from './from'
+    archiveFileName.set('test.zip')
+    destinationDirectory.set(layout.projectDirectory) // build.gradleがあるディレクトリ
+
+    doLast {
+        delete './from'
+        delete './test.zip'
+    }
+}
+
+// Tarタスク
+delete './from'
+delete './into'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+
+
+tasks.register('tartask', Tar) {
+    from './from'
+    archiveFileName.set('test.tar.gz')
+    destinationDirectory.set(layout.projectDirectory) // build.gradleがあるディレクトリ
+
+    doLast {
+        delete './from'
+        delete './test.tar.gz'
+    }
+}
+
