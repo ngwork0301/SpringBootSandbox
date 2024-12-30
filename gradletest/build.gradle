@@ -325,4 +325,23 @@ tasks.register('ziptask', Zip) {
     }
 }
 
+// Tarタスク
+delete './from'
+delete './into'
+file('./from').mkdir()
+file('./from/a.txt').createNewFile()
+file('./from/dir').mkdir()
+file('./from/dir/b.txt').createNewFile()
+
+
+tasks.register('tartask', Tar) {
+    from './from'
+    archiveFileName.set('test.tar.gz')
+    destinationDirectory.set(layout.projectDirectory) // build.gradleがあるディレクトリ
+
+    doLast {
+        delete './from'
+        delete './test.tar.gz'
+    }
+}
 
