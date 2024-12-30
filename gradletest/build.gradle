@@ -251,4 +251,18 @@ task1 {
     }
 }
 
+// doLast内の処理は、実行フェーズ
+// その外に書いた処理は、設定フェーズ
+tasks.register('task2') {
+    println 'config a'
+    doLast {
+        println 'exec a'
+    }
+}
 
+tasks.register('task3') {
+    println 'config b'
+    doLast {
+        println 'exec b'
+    }
+}
