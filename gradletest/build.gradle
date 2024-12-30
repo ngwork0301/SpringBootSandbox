@@ -232,3 +232,23 @@ tasks.register('task1') {
     }
 }
 
+// doLastの中身は、以下のようなactionsへの追加
+// tasks.register('task1') {
+//     actions.add(new Action<Task>() {
+//         @Override
+//         public void execute(Task task) {
+//             println("aaa")
+//         }
+//     })
+// }
+
+// Taskが使えるメソッド
+// https://docs.gradle.org/current/dsl/org.gradle.api.Task.html#N18C09
+
+task1 {
+    doLast {
+        println 'additional processing'
+    }
+}
+
+
