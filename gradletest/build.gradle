@@ -261,7 +261,8 @@ tasks.register('task2') {
 }
 
 tasks.register('task3') {
-    println 'config b'
+    // dependsOnで依存するタスクを登録すると、task3を呼び出すと、task2が先に実行される
+    dependsOn 'task2'
     doLast {
         println 'exec b'
     }
