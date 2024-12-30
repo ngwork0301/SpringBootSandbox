@@ -293,3 +293,10 @@ tasks.register('copytask', Copy) {
 
 delete './from'
 delete './into'
+
+
+// Execタスク
+tasks.register('exectask', Exec) {
+    environment = [ 'test1': 'aaa', 'test2': 'bbb', 'test3': 'ccc' ]
+    commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
+}
