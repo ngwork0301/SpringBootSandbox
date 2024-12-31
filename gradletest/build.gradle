@@ -349,18 +349,36 @@ tasks.register('tartask', Tar) {
 // Configuration
 
 // ファイルをグループ化
+// configurations {
+//     conf
+// }
+
+// dependencies {
+//     conf files('./a.txt')
+//     conf files('./b.txt')
+//     conf files('./c.txt')
+// }
+
+// copy {
+//     from configurations.conf
+//     into './dir'
+// }
+
+// セントラルリポジトリからjarの取得
 configurations {
     conf
 }
 
 dependencies {
-    conf files('./a.txt')
-    conf files('./b.txt')
-    conf files('./c.txt')
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.25
+    conf 'org.slf4j:slf4j-api:1.7.25'
+}
+
+repositories {
+    mavenCentral()
 }
 
 copy {
     from configurations.conf
-    into './dir'
+    into './lib'
 }
-
