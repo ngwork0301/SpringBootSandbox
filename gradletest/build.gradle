@@ -366,12 +366,17 @@ tasks.register('tartask', Tar) {
 
 // セントラルリポジトリからjarの取得
 configurations {
-    conf
+    conf {
+        // 推移的関係の無効化
+        transitive false
+    }
 }
 
 dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.25
-    conf 'org.slf4j:slf4j-api:1.7.25'
+    // Latest戦略により、依存するjarのバージョンが違ったときは、最新のバージョンが採用される
+    conf 'org.slf4j:slf4j-api:1.6.6'
+    conf 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
 }
 
 repositories {
@@ -382,3 +387,15 @@ copy {
     from configurations.conf
     into './lib'
 }
+
+// 推移的依存関係の解決
+// 以下のコマンドで依存関係を確認できる
+// gradle dependencies
+
+// conf
+// +--- org.slf4j:slf4j-api:1.7.25
+// \--- org.apache.logging.log4j:log4j-slf4j-impl:2.17.2
+//      +--- org.slf4j:slf4j-api:1.7.25
+//      +--- org.apache.logging.log4j:log4j-api:2.17.2
+//      \--- org.apache.logging.log4j:log4j-core:2.17.2
+//           \--- org.apache.logging.log4j:log4j-api:2.17.2
