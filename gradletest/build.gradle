@@ -345,3 +345,22 @@ tasks.register('tartask', Tar) {
     }
 }
 
+/////////////////////
+// Configuration
+
+// ファイルをグループ化
+configurations {
+    conf
+}
+
+dependencies {
+    conf files('./a.txt')
+    conf files('./b.txt')
+    conf files('./c.txt')
+}
+
+copy {
+    from configurations.conf
+    into './dir'
+}
+
