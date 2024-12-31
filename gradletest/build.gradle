@@ -368,7 +368,10 @@ tasks.register('tartask', Tar) {
 configurations {
     conf {
         // 推移的関係の無効化
-        transitive false
+        // transitive false
+
+        // 部分的に推移的関係を無効化
+        exclude module: 'log4j-core'
     }
 }
 
