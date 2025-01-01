@@ -21,6 +21,11 @@
 // 3. 実行フェーズ
 //   gradleコマンドの引数に対応するTaskのactionsを実行
 
+// プラグインによるProjectの拡張
+// 上記 3.設定フェーズ のtasksの初期化後に、プラグインの登録処理が走る
+// プラグインの内部でProjcetオブジェクトを操作してTaskやConfigurationを事前に用意しておくことができる
+// javaプラグイン、applictionプラグインが代表的
+
 
 // println "Hello World."
 // // System.getenv のように引数のない関数のカッコは省略できない
@@ -463,4 +468,25 @@ tasks.register('exec', JavaExec) {
     main = 'Main'
     classpath = files('./lib/*:./jar/main.jar')
     args = ['a', 'b', 'c']
+}
+
+
+apply from: 'test_plugin.gradle'
+
+printABC {
+    doLast {
+        println 'ABC'
+    }
+}
+
+tasks.register('printConf') {
+    doLast {
+        configurations.testConf.forEach({ println it })
+    }
+}
+
+tasks.register('printProps') {
+    doLast {
+        testExt.printProps()
+    }
 }
