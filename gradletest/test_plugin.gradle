@@ -1,0 +1,32 @@
+class TestPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.getConfigurations().create("testConf");
+        // Congiturationを事前に定義
+        project.getDependencies().add("testConf", "org.slf4j:slf4j-api:1.7.25");
+        project.getDependencies().add("testConf", "org.apache.logging.log4j:log4j-slf4j-impl:2.17.2");
+        project.getRepositories().mavenCentral();
+        project.getTasks().register("printABC",
+            // printABCタスクに、事前処理を追加
+            new Action<Task>() {
+                @Override
+                public void execute(Task task) {
+                    println 'abc'
+                }
+            }
+        );
+        ExtensionContainer extentions = project.getExtensions();
+        // Extensionを使ったtestExtプロパティを事前に追加
+        extentions.add('testExt', TestExtension.class)
+    }
+}
+
+class TestExtension {
+    String p1 = 'aaa';
+    String p2 = 'bbb';
+
+    void printProps() {
+        println p1 + ', ' + p2;
+    }
+}
+
+apply plugin: TestPlugin
