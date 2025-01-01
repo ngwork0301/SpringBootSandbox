@@ -1,218 +1,218 @@
-println "Hello World."
-// System.getenv のように引数のない関数のカッコは省略できない
-println System.getenv()
+// println "Hello World."
+// // System.getenv のように引数のない関数のカッコは省略できない
+// println System.getenv()
 
-// ダブルクォーテーションの文字列内には、シェルっぽく${}で変数を入れられる
-def greet = 'Hello'
-println "${greet} World!"
+// // ダブルクォーテーションの文字列内には、シェルっぽく${}で変数を入れられる
+// def greet = 'Hello'
+// println "${greet} World!"
 
-// クラスの実装
-// Groovy内にはクラスのフィードとメソッドはすべてpublic
-class TestClass {
-    def hoge = 'abc'
+// // クラスの実装
+// // Groovy内にはクラスのフィードとメソッドはすべてpublic
+// class TestClass {
+//     def hoge = 'abc'
 
-    // フィードアクセスでこれが呼ばれる
-    def getHoge() {
-        println 'getHoge() called'
-        return this.hoge
-    }
+//     // フィードアクセスでこれが呼ばれる
+//     def getHoge() {
+//         println 'getHoge() called'
+//         return this.hoge
+//     }
 
-    // フィードアクセスでこれが呼ばれる
-    def setHoge(newHoge) {
-        println "setHoge(${newHoge}) called"
-        this.hoge = newHoge
-    }
+//     // フィードアクセスでこれが呼ばれる
+//     def setHoge(newHoge) {
+//         println "setHoge(${newHoge}) called"
+//         this.hoge = newHoge
+//     }
     
-    def sayHoge() {
-        println hoge
-    }
-}
+//     def sayHoge() {
+//         println hoge
+//     }
+// }
 
-def test = new TestClass()
+// def test = new TestClass()
 
-println test.hoge
-test.hoge = 'cdf'
+// println test.hoge
+// test.hoge = 'cdf'
 
-test.sayHoge()
-
-
- // クロージャの実装
- // クロージャは本来は「環境つき関数」だが、
- // Groovyでは「無名関数」「ラムダ」の意味合いも持つ
-
- // 本来のクロージャ
- def c0 = {
-    def local = 1
-    return { x -> local += x; println local }
- }
-
- def closure = c0()
- closure(100) // 101
- closure(100) // 201
- closure(100) // 301
-
-// 無名関数としてのクロージャ
-def c1 = { a, b -> println a + b }
-c1(1, 2)   // 3
-
-// ラムダとしてのクロージャ
-def c2 = { a -> println a}
-[10, 20, 30].each(c2)   // [] はJavaのList型と同じ。10, 20, 30
-// リストや配列、コレクションなどのつかいかたは
-// https://koji-k.github.io/groovy-tutorial/collection/list.html
-
-// 引数が1つだけの場合、記述を省略できる（引数がitとして予約される）
-def c3 = { println it }
-c3(1000)  // 1000
-def c4 = { it() }  // 引数でうけとったクロージャをそのまま実行
-c4 {
-    println 'abc'
-}
-
-// 引数の最後がクロージャのとき、クロージャの中身の実装を外側に書ける
-def c5 = { a, closure5 -> 
-    closure5(a) 
-}
-// 普通なら以下のように第2引数にクロージャを渡すが
-c5('def', { println it })
-// 以下のように外側にクロージャの実装を書ける
-c5('ghi') {
-    println it
-}
-
-// クロージャのデリゲート (template Methodパターン)
-def c6 = {
-    hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
-    fuga('abc')
-}
-
-class HogeFuga {
-    def hoge(int num) {
-        println num
-    }
-
-    def fuga(String str) {
-        println str
-    }
-}
-
-def hogefuga = new HogeFuga()
-
-// クロージャの delegate に HogeFugaクラスのインスタンスを設定
-c6.delegate = hogefuga
-c6()
-
-// ファイル操作
-
-// file()でFileオブジェクト(Java)が生成できる
-file('./dir1').mkdir()
-file('./dir1/a.txt').createNewFile()
-file('./dir1/b.txt').createNewFile()
-file('./dir1/dir2').mkdir()
-file('./dir1/dir2/c.txt').createNewFile()
-
-// files() で FileCollectionオブジェクト(Gradle固有) が生成できる
-// - Iterable<File> の実装クラス
-// https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileCollection.html
-def list = files('c.json', 'a.txt', 'a.csv', 'a.json', 'b.csv', 'b.json')
-list.filter({ f -> f.getName().endsWith('.json') }).sort().each({ println it.getName() })
-
-// ネストしてもフラットなリストとして扱える
-def list2 = files(files('c.json', 'a.txt', 'a.csv'), files('a.json', 'b.csv', 'b.json'))
-list.filter({ f -> f.getName().endsWith('.csv') }).sort().each({ println it.getName() })
-
-// fileTreeでFileTreeオブジェクト(Gradle固有）が生成できる
-// - FileCollectionのサブクラス
-// https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html
-fileTree('./dir1').visit({ println it.getPath().toString() })
-
-file('./dir1/dir2/c.txt').delete()
-file('./dir1/dir2').delete()
-file('./dir1/b.txt').delete()
-file('./dir1/a.txt').delete()
-file('./dir1').delete()
+// test.sayHoge()
 
 
-// deleteは、ファイル、ディレクトリは再帰的に削除可能
-file('./tmp').mkdir()
-file('./tmp/abc.txt').createNewFile()
+//  // クロージャの実装
+//  // クロージャは本来は「環境つき関数」だが、
+//  // Groovyでは「無名関数」「ラムダ」の意味合いも持つ
 
-delete './tmp'
+//  // 本来のクロージャ
+//  def c0 = {
+//     def local = 1
+//     return { x -> local += x; println local }
+//  }
 
-// copy
-// 引数にクロージャを渡すことで様々なカスタマイズが可能
-delete './from'
-delete './into'
-file('./from').mkdir()
-file('./from/a.txt').createNewFile()
-file('./from/dir').mkdir()
-file('./from/dir/b.txt').createNewFile()
-file('./into').mkdir()
+//  def closure = c0()
+//  closure(100) // 101
+//  closure(100) // 201
+//  closure(100) // 301
 
-import java.nio.file.Files
-import java.nio.file.Path
-file('./from/hogefuga.txt').createNewFile()
-Files.writeString(Path.of('./from/hogefuga.txt'), '''
-Hello, ${hoge} !
-Hello, ${fuga} !
-''');
+// // 無名関数としてのクロージャ
+// def c1 = { a, b -> println a + b }
+// c1(1, 2)   // 3
 
-// hogefuga.txtをテンプレートにして、${hoge}と${fuga}の中身を置き換えてファイル生成
-copy {
-    from './from/hogefuga.txt'
-    into './into'
-    expand([
-        hoge: 'aaa',
-        fuga: 'bbb'
-    ])
-}
+// // ラムダとしてのクロージャ
+// def c2 = { a -> println a}
+// [10, 20, 30].each(c2)   // [] はJavaのList型と同じ。10, 20, 30
+// // リストや配列、コレクションなどのつかいかたは
+// // https://koji-k.github.io/groovy-tutorial/collection/list.html
 
-delete './from'
-delete './into'
+// // 引数が1つだけの場合、記述を省略できる（引数がitとして予約される）
+// def c3 = { println it }
+// c3(1000)  // 1000
+// def c4 = { it() }  // 引数でうけとったクロージャをそのまま実行
+// c4 {
+//     println 'abc'
+// }
+
+// // 引数の最後がクロージャのとき、クロージャの中身の実装を外側に書ける
+// def c5 = { a, closure5 -> 
+//     closure5(a) 
+// }
+// // 普通なら以下のように第2引数にクロージャを渡すが
+// c5('def', { println it })
+// // 以下のように外側にクロージャの実装を書ける
+// c5('ghi') {
+//     println it
+// }
+
+// // クロージャのデリゲート (template Methodパターン)
+// def c6 = {
+//     hoge(123)    // delegateに指定された実装にあわせてメソッドの中身を差し替えられる
+//     fuga('abc')
+// }
+
+// class HogeFuga {
+//     def hoge(int num) {
+//         println num
+//     }
+
+//     def fuga(String str) {
+//         println str
+//     }
+// }
+
+// def hogefuga = new HogeFuga()
+
+// // クロージャの delegate に HogeFugaクラスのインスタンスを設定
+// c6.delegate = hogefuga
+// c6()
+
+// // ファイル操作
+
+// // file()でFileオブジェクト(Java)が生成できる
+// file('./dir1').mkdir()
+// file('./dir1/a.txt').createNewFile()
+// file('./dir1/b.txt').createNewFile()
+// file('./dir1/dir2').mkdir()
+// file('./dir1/dir2/c.txt').createNewFile()
+
+// // files() で FileCollectionオブジェクト(Gradle固有) が生成できる
+// // - Iterable<File> の実装クラス
+// // https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileCollection.html
+// def list = files('c.json', 'a.txt', 'a.csv', 'a.json', 'b.csv', 'b.json')
+// list.filter({ f -> f.getName().endsWith('.json') }).sort().each({ println it.getName() })
+
+// // ネストしてもフラットなリストとして扱える
+// def list2 = files(files('c.json', 'a.txt', 'a.csv'), files('a.json', 'b.csv', 'b.json'))
+// list.filter({ f -> f.getName().endsWith('.csv') }).sort().each({ println it.getName() })
+
+// // fileTreeでFileTreeオブジェクト(Gradle固有）が生成できる
+// // - FileCollectionのサブクラス
+// // https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html
+// fileTree('./dir1').visit({ println it.getPath().toString() })
+
+// file('./dir1/dir2/c.txt').delete()
+// file('./dir1/dir2').delete()
+// file('./dir1/b.txt').delete()
+// file('./dir1/a.txt').delete()
+// file('./dir1').delete()
 
 
-// execでコマンド実行ができる
-exec {
-    commandLine 'java', '-version'
-}
+// // deleteは、ファイル、ディレクトリは再帰的に削除可能
+// file('./tmp').mkdir()
+// file('./tmp/abc.txt').createNewFile()
 
-// 環境変数の指定
-// - mac / linux
-exec {
-    environment = [ 'test1': 'aaa' , 'test2': 'bbb' , 'test3': 'ccc' ]
-    commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
-}
+// delete './tmp'
 
-// javaexecでjavaコマンドを呼び出し
-import java.nio.file.Path;
-import java.nio.file.Files;
+// // copy
+// // 引数にクロージャを渡すことで様々なカスタマイズが可能
+// delete './from'
+// delete './into'
+// file('./from').mkdir()
+// file('./from/a.txt').createNewFile()
+// file('./from/dir').mkdir()
+// file('./from/dir/b.txt').createNewFile()
+// file('./into').mkdir()
 
-delete('./Main.java')
-delete('./Main.class')
+// import java.nio.file.Files
+// import java.nio.file.Path
+// file('./from/hogefuga.txt').createNewFile()
+// Files.writeString(Path.of('./from/hogefuga.txt'), '''
+// Hello, ${hoge} !
+// Hello, ${fuga} !
+// ''');
 
-Files.writeString(Path.of('Main.java'), '''
-import java.util.Arrays;
+// // hogefuga.txtをテンプレートにして、${hoge}と${fuga}の中身を置き換えてファイル生成
+// copy {
+//     from './from/hogefuga.txt'
+//     into './into'
+//     expand([
+//         hoge: 'aaa',
+//         fuga: 'bbb'
+//     ])
+// }
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(Arrays.toString(args));
-    }
-}
-''');
-
-exec {
-    commandLine 'javac', 'Main.java'
-}
+// delete './from'
+// delete './into'
 
 
-javaexec {
-    main = 'Main'
-    classpath = files('.')
-    args = ['a', 'b', 'c']
-}
+// // execでコマンド実行ができる
+// exec {
+//     commandLine 'java', '-version'
+// }
 
-delete('./Main.java')
-delete('./Main.class')
+// // 環境変数の指定
+// // - mac / linux
+// exec {
+//     environment = [ 'test1': 'aaa' , 'test2': 'bbb' , 'test3': 'ccc' ]
+//     commandLine 'sh', '-c', 'echo $test1 $test2 $test3'
+// }
+
+// // javaexecでjavaコマンドを呼び出し
+// import java.nio.file.Path;
+// import java.nio.file.Files;
+
+// delete('./Main.java')
+// delete('./Main.class')
+
+// Files.writeString(Path.of('Main.java'), '''
+// import java.util.Arrays;
+
+// public class Main {
+//     public static void main(String[] args) {
+//         System.out.println(Arrays.toString(args));
+//     }
+// }
+// ''');
+
+// exec {
+//     commandLine 'javac', 'Main.java'
+// }
+
+
+// javaexec {
+//     main = 'Main'
+//     classpath = files('.')
+//     args = ['a', 'b', 'c']
+// }
+
+// delete('./Main.java')
+// delete('./Main.class')
 
 
 /////////////////////////
@@ -365,31 +365,31 @@ tasks.register('tartask', Tar) {
 // }
 
 // セントラルリポジトリからjarの取得
-configurations {
-    conf {
-        // 推移的関係の無効化
-        // transitive false
+// configurations {
+//     conf {
+//         // 推移的関係の無効化
+//         // transitive false
 
-        // 部分的に推移的関係を無効化
-        exclude module: 'log4j-core'
-    }
-}
+//         // 部分的に推移的関係を無効化
+//         exclude module: 'log4j-core'
+//     }
+// }
 
-dependencies {
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.25
-    // Latest戦略により、依存するjarのバージョンが違ったときは、最新のバージョンが採用される
-    conf 'org.slf4j:slf4j-api:1.6.6'
-    conf 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
-}
+// dependencies {
+//     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.25
+//     // Latest戦略により、依存するjarのバージョンが違ったときは、最新のバージョンが採用される
+//     conf 'org.slf4j:slf4j-api:1.6.6'
+//     conf 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
+// }
 
-repositories {
-    mavenCentral()
-}
+// repositories {
+//     mavenCentral()
+// }
 
-copy {
-    from configurations.conf
-    into './lib'
-}
+// copy {
+//     from configurations.conf
+//     into './lib'
+// }
 
 // 推移的依存関係の解決
 // 以下のコマンドで依存関係を確認できる
@@ -402,3 +402,41 @@ copy {
 //      +--- org.apache.logging.log4j:log4j-api:2.17.2
 //      \--- org.apache.logging.log4j:log4j-core:2.17.2
 //           \--- org.apache.logging.log4j:log4j-api:2.17.2
+
+configurations {
+    conf
+}
+
+dependencies {
+    conf 'org.slf4j:slf4j-api:1.6.6'
+    conf 'org.slf4j:slf4j-simple:1.7.25'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.register('resolveDependencies', Copy) {
+    from configurations.conf
+    into './lib'
+}
+
+tasks.register('javac', Exec) {
+    dependsOn resolveDependencies
+    delete './Main.class'
+    commandLine 'javac', 'Main.java', '-cp', './lib/*', '-encoding', 'UTF-8', '-source', '17', '-d', './classes'
+}
+
+tasks.register('jar', Exec) {
+    dependsOn javac
+    delete './jar'
+    file('./jar').mkdirs()
+    commandLine 'jar', 'cfe', './jar/main.jar', 'Main', '-C', './classes', '.'
+}
+
+tasks.register('exec', JavaExec) {
+    dependsOn jar
+    main = 'Main'
+    classpath = files('./lib/*:./jar/main.jar')
+    args = ['a', 'b', 'c']
+}
