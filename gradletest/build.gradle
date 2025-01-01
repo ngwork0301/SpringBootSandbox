@@ -1,3 +1,27 @@
+////////////////////
+// build.gradleに書く内容は、１つのおおきなクロージャとして扱われ、
+// そのクロージャのdelegateに、Gradleフレームワークのオブジェクトが指定されてGradleが動作する
+// configuration, dependencies, repositoryes, tasks などは
+// Gradleフレームワークの内部にある Projectオブジェクトのメソッド、およびプロパティに対応している
+
+// 3つのフェーズ
+// GradleのProjectオブジェクトは、３つのフェーズを経て初期化・実行される
+// 1. 初期化フェーズ
+//   Projectオブジェクトを生成
+// 2. 設定フェーズ
+//   build.gradleに書かれた設定用の内容を実行
+//     Project#configuration 実行
+//       configurationブロックで指定したクロージャが、Projectオブジェクト配下にあるConfigurationContainerに処理をデリゲートする
+//     Project#dependencies 実行
+//       dependenciesブロックで指定したクロージャが、DependencyHanlderに処理をデリゲート
+//     Project#repositories 実行
+//       repositoriesブロックで指定したクロージャが、RepositoryHandlerに処理をデリゲート
+//     Projectオブジェクトのtasksプロパティを初期化し、各Taskを追加
+//       tasksプロパティは、TaskContainerというインタフェースを実装し、resigterなどのメソッドを持つ
+// 3. 実行フェーズ
+//   gradleコマンドの引数に対応するTaskのactionsを実行
+
+
 // println "Hello World."
 // // System.getenv のように引数のない関数のカッコは省略できない
 // println System.getenv()
